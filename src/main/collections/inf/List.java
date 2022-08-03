@@ -23,5 +23,4 @@ public interface List<E> {
     boolean isEmpty();
 
     public void clear();
-
 }

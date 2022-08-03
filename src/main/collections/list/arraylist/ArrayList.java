@@ -25,24 +25,22 @@ public class ArrayList<E> implements List<E> {
 
     private void resize() {
         int arrayCapacity = array.length;
-        int resizeCapacity = arrayCapacity;
 
         if (Arrays.equals(array, EMPTY_ARRAY)) {
             array = new Object[DEFAULT_CAPACITY];
             return;
         }
-        resizeCapacity = getResizeCapacity(arrayCapacity, resizeCapacity);
-        array = Arrays.copyOf(array, resizeCapacity);
+        arrayCapacity = getResizeCapacity(arrayCapacity);
+        array = Arrays.copyOf(array, Math.max(arrayCapacity, DEFAULT_CAPACITY));
     }
 
-    private int getResizeCapacity(int arrayCapacity, int resizeCapacity) {
+    private int getResizeCapacity(int arrayCapacity) {
+        int resizeCapacity = arrayCapacity;
         if (size == arrayCapacity) {
             resizeCapacity = arrayCapacity * 2;
-        } else if (size < (arrayCapacity /2)) {
+        } else if (size < (arrayCapacity / 2)) {
             resizeCapacity = arrayCapacity / 2;
         }
-        if (resizeCapacity < DEFAULT_CAPACITY)
-            resizeCapacity = DEFAULT_CAPACITY;
         return resizeCapacity;
     }
 
@@ -106,18 +104,22 @@ public class ArrayList<E> implements List<E> {
         array[index] = value;
     }
 
+    // 읽을 때는 index가 size랑 같으면 예외 포함
     private void indexOutOfBoundsRead(int index) {
         if (index >= size || index < 0)
             throw new IndexOutOfBoundsException();
     }
     private void indexOutOfBoundsAdd(int index) {
-        if (index >= size || index < 0)
+        if (index > size || index < 0)
             throw new IndexOutOfBoundsException();
     }
 
     @Override
     public boolean contains(Object value) {
-        return (indexOf(value) >= 0);
+        boolean result = false;
+        if (indexOf(value) >= 0)
+            result = true;
+        return result;
     }
 
     @Override
